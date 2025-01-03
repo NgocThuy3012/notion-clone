@@ -48,6 +48,14 @@ export const Navigation = () => {
   useEffect(() => {
     if (isMobile) {
       collapse();
+    } else {
+      resetWidth();
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      collapse();
     }
   }, [pathname, isMobile]);
 
@@ -101,14 +109,6 @@ export const Navigation = () => {
       setTimeout(() => setIsResetting(false), 300);
     }
   };
-
-  useEffect(() => {
-    if (isMobile) {
-      collapse();
-    } else {
-      resetWidth();
-    }
-  }, [isMobile]);
 
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
