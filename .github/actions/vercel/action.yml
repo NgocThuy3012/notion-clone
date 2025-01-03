@@ -1,0 +1,38 @@
+name: Build and Deploy to Vercel
+description: This action allows to build & deploy the artifacts to Vercel
+
+inputs:
+  environment:
+    description: Vercel Environment
+    required: true
+
+  organizationID:
+    description: Vercel Organization ID
+    required: true
+
+  projectID:
+    description: Vercel Project ID
+    required: true
+
+  token:
+    description: Vercel Token
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install Vercel CLI
+      shell: bash
+      run: npm install --global vercel
+
+    - name: Pull vercel environment information
+      shell: bash
+      run: vercel pull --yes --token=${{ inputs.token }} ${{ inputs.environment == 'production' && '--environment=production' || '--environment=preview ' }}
+
+    - name: Build project artifacts
+      shell: bash
+      run: vercel build --yes --token=${{ inputs.token }} ${{ inputs.environment == 'production' && '--prod' || '--target=preview' }}
+
+    - name: Deploy project artifacts
+      shell: bash
+      run: vercel deploy --yes --prebuilt --token=${{ inputs.token }} ${{ inputs.environment == 'production' && '--prod' || '--target=preview' }}
