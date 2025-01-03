@@ -1,25 +1,23 @@
-name: Vercel Production Deployment
-
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+name: Deploy to Vercel
 
 on:
   push:
     branches:
-      - main
+      - main # Deploy khi có thay đổi trên nhánh main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Production
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Build & Deploy to Vercel
-        uses: ./.github/actions/vercel
-        with:
-          environment: "production"
-          organizationID: ${{ secrets.VERCEL_ORG_ID }}
-          projectID: ${{ secrets.VERCEL_PROJECT_ID }}
-          token: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
